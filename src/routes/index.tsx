@@ -31,6 +31,11 @@ const NotesTab = lazy(() =>
   import('@/features/clients/components/notes-tab').then((m) => ({ default: m.NotesTab }))
 );
 
+// Home
+const HomePage = lazy(() =>
+  import('@/features/home/pages/home-page').then((m) => ({ default: m.HomePage }))
+);
+
 // Groups
 const GroupListPage = lazy(() =>
   import('@/features/groups/pages/group-list-page').then((m) => ({ default: m.GroupListPage }))
@@ -75,10 +80,9 @@ export const router = createBrowserRouter([
           {
             path: '/home',
             element: (
-              <div className="text-center py-12">
-                <h1 className="text-2xl font-bold text-msacco-navy-heading">Welcome to M-Sacco</h1>
-                <p className="text-muted-foreground mt-2">Select a module from the navigation bar above.</p>
-              </div>
+              <SuspenseWrapper>
+                <HomePage />
+              </SuspenseWrapper>
             ),
           },
           {

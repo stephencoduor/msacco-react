@@ -42,6 +42,6 @@ test.describe('Login', () => {
     await page.click('button[type="submit"]');
 
     await page.waitForURL('**/home', { timeout: 15000 });
-    await expect(page.getByText('Welcome to M-Sacco')).toBeVisible();
+    await expect(page.getByText(/Welcome/)).toBeVisible();
   });
 });
