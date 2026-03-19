@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
+# Screenshots (pending only - verified are committed)
+screenshots/pending-verification/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

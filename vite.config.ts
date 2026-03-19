@@ -14,7 +14,7 @@ export default defineConfig({
     port: 4300,
     proxy: {
       '/fineract-provider': {
-        target: 'https://fineract.us',
+        target: 'https://api.fineract.us',
         changeOrigin: true,
         secure: false,
       },
