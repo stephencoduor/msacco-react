@@ -31,6 +31,14 @@ const NotesTab = lazy(() =>
   import('@/features/clients/components/notes-tab').then((m) => ({ default: m.NotesTab }))
 );
 
+// Groups
+const GroupListPage = lazy(() =>
+  import('@/features/groups/pages/group-list-page').then((m) => ({ default: m.GroupListPage }))
+);
+const GroupDetailPage = lazy(() =>
+  import('@/features/groups/pages/group-detail-page').then((m) => ({ default: m.GroupDetailPage }))
+);
+
 function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   return (
     <Suspense
@@ -115,10 +123,22 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          // Placeholder routes for other modules
+          // Groups module
           {
             path: '/groups',
-            element: <Placeholder title="Groups" />,
+            element: (
+              <SuspenseWrapper>
+                <GroupListPage />
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: '/groups/:id',
+            element: (
+              <SuspenseWrapper>
+                <GroupDetailPage />
+              </SuspenseWrapper>
+            ),
           },
           {
             path: '/accounting',
