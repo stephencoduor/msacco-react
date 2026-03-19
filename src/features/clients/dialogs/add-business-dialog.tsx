@@ -11,13 +11,12 @@ import { Label } from '@/components/ui/label';
 import { useAddFamilyMember } from '../hooks/use-client-mutations';
 
 const schema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  mobileNumber: z.string().optional(),
-  professionId: z.string().optional(),
-  relationshipId: z.string().min(1, 'Relationship is required'),
-  genderId: z.string().min(1, 'Gender is required'),
-  dateOfBirth: z.string().min(1, 'Date of birth is required'),
+  businessName: z.string().min(1, 'Business name is required'),
+  businessType: z.string().optional(),
+  startDate: z.string().min(1, 'Business start date is required'),
+  address: z.string().min(1, 'Address is required'),
+  county: z.string().optional(),
+  postalCode: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -35,18 +34,18 @@ export function AddBusinessDialog({ clientId, open, onClose }: AddBusinessDialog
   });
 
   const onSubmit = (data: FormData) => {
-    const [y, m, d] = data.dateOfBirth.split('-');
+    const [y, m, d] = data.startDate.split('-');
     mutation.mutate(
       {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        mobileNumber: data.mobileNumber,
-        professionId: data.professionId ? Number(data.professionId) : undefined,
-        relationshipId: Number(data.relationshipId),
-        genderId: Number(data.genderId),
+        firstName: data.businessName,
+        lastName: data.businessType || 'Business',
+        mobileNumber: data.postalCode,
+        qualification: data.address,
         dateOfBirth: `${d} ${getMonthName(+m)} ${y}`,
         dateFormat: 'dd MMMM yyyy',
         locale: 'en',
+        relationshipId: 1,
+        genderId: 22,
         isDependent: false,
       },
       {
@@ -62,49 +61,49 @@ export function AddBusinessDialog({ clientId, open, onClose }: AddBusinessDialog
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Business Contact</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Business Details</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" {...register('firstName')} />
-              {errors.firstName && <p className="text-sm text-destructive">{errors.firstName.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" {...register('lastName')} />
-              {errors.lastName && <p className="text-sm text-destructive">{errors.lastName.message}</p>}
-            </div>
+          <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3">
+            <Label htmlFor="businessName" className="text-right">Business Name</Label>
+            <Input id="businessName" {...register('businessName')} />
+            {errors.businessName && (
+              <div className="col-start-2">
+                <p className="text-sm text-destructive">{errors.businessName.message}</p>
+              </div>
+            )}
+
+            <Label htmlFor="businessType" className="text-right">Business Type</Label>
+            <Input id="businessType" placeholder="e.g. Farming" {...register('businessType')} />
+
+            <Label htmlFor="startDate" className="text-right">Business Start Date *</Label>
+            <Input id="startDate" type="date" {...register('startDate')} />
+            {errors.startDate && (
+              <div className="col-start-2">
+                <p className="text-sm text-destructive">{errors.startDate.message}</p>
+              </div>
+            )}
+
+            <Label htmlFor="address" className="text-right">Address *</Label>
+            <Input id="address" {...register('address')} />
+            {errors.address && (
+              <div className="col-start-2">
+                <p className="text-sm text-destructive">{errors.address.message}</p>
+              </div>
+            )}
+
+            <Label htmlFor="county" className="text-right">County</Label>
+            <Input id="county" {...register('county')} />
+
+            <Label htmlFor="postalCode" className="text-right">Postal Code</Label>
+            <Input id="postalCode" {...register('postalCode')} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="genderId">Gender ID</Label>
-              <Input id="genderId" placeholder="e.g. 22" {...register('genderId')} />
-              {errors.genderId && <p className="text-sm text-destructive">{errors.genderId.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="relationshipId">Relationship ID</Label>
-              <Input id="relationshipId" placeholder="e.g. 1" {...register('relationshipId')} />
-              {errors.relationshipId && <p className="text-sm text-destructive">{errors.relationshipId.message}</p>}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="dateOfBirth">Date of Birth</Label>
-              <Input id="dateOfBirth" type="date" {...register('dateOfBirth')} />
-              {errors.dateOfBirth && <p className="text-sm text-destructive">{errors.dateOfBirth.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="mobileNumber">Mobile Number</Label>
-              <Input id="mobileNumber" {...register('mobileNumber')} />
-            </div>
-          </div>
+
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="button" variant="outline" onClick={onClose}>Close</Button>
             <Button type="submit" className="bg-msacco-navy hover:bg-msacco-navy-light" disabled={mutation.isPending}>
               {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-              Save
+              Add
             </Button>
           </DialogFooter>
         </form>
